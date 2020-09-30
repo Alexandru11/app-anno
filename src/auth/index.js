@@ -45,7 +45,36 @@ export const useAuth0 = ({
       async login(credentials, cb) {
         credentials.realm = this.options.connection;
 
-        await this.auth0Client.client.login(credentials, cb);
+        try {
+          await this.auth0Client.client.login(credentials, cb);
+          this.setAuthenticationInfo(true);
+        } catch (e) {
+          this.error = e;
+        }
+      },
+
+      async loginSocial(params) {
+        params.responseType = 'token';
+        params.redirect_uri = `${window.location.origin}`;
+        params.client_id = this.options.clientId;
+
+        try {
+          await this.auth0Client.authorize(params);
+          this.setAuthenticationInfo(true);
+        } catch (e) {
+          this.error = e;
+        }
+      },
+
+      async logout(params = {}) {
+        params.client_id = this.options.clientId;
+        await this.auth0Client.logout(params);
+        this.setAuthenticationInfo(false);
+      },
+
+      setAuthenticationInfo(value) {
+        this.isAuthenticated = value;
+        window.localStorage.setItem('isAuthenticated', value);
       },
     },
     /** Use this lifecycle method to instantiate the SDK client */

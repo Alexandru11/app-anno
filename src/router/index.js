@@ -58,6 +58,9 @@ const router = new VueRouter({
  */
 
 router.beforeEach((to, from, next) => {
+  console.log(to);
+  console.log(from);
+  console.log(next);
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     console.log(to.matched.some((record) => record.meta.requiresAuth));
     if (localStorage.getItem('jwt') == null) {
@@ -68,7 +71,15 @@ router.beforeEach((to, from, next) => {
     } else {
       next();
     }
-  } else if (localStorage.getItem('jwt') != null) {
+  } else if (localStorage.getItem('jwt') != null && localStorage.getItem('isAuthenticated')) {
+    next({
+      path: '/',
+      params: { nextUrl: '/' },
+    });
+  } else if (to.fullPath.includes('access_token') && localStorage.getItem('isAuthenticated')) {
+    const uriParams = new URLSearchParams(to.fullPath.replace('/', '?'));
+    const accessToken = uriParams.get('access_token');
+    window.localStorage.setItem('jwt', accessToken);
     next({
       path: '/',
       params: { nextUrl: '/' },

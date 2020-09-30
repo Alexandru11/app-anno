@@ -1,19 +1,14 @@
 <template>
-<div id="app">
-   <router-view />
-</div>
+  <v-textarea></v-textarea>
 </template>
 
 <script>
 
 export default {
-  name: 'App',
-
-  components: {
-  },
-
+  name: 'ListDocumentsComponent',
   data: () => ({
-    //
   }),
+  methods: {
+  },
 };
 </script>

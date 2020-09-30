@@ -55,11 +55,18 @@
                 </v-alert>
               </div>
               <v-card-actions class="d-flex justify-center">
-                <div class="d-flex flex-column">
+                <div class="d-flex flex-column text-center">
                     <v-btn :disabled="!valid" @click="login" text color="green" >
                       Login
                     </v-btn>
-                    <v-chip :to="{ path: '/register' }" color="white" text-color="blue">
+                    <v-btn @click="loginFB" text color="blue">
+                      Login with Facebook
+                    </v-btn>
+                    <v-btn @click="loginG" text color="red">
+                      Login with Google
+                    </v-btn>
+                    <v-chip :to="{ path: '/register' }" color="white"
+                            text-color="blue" class="text-center">
                         Sign up for app-anno
                     </v-chip>
                 </div>
@@ -73,7 +80,7 @@
 <script>
 
 export default {
-  name: 'Login',
+  name: 'LoginComponent',
 
   data: () => ({
     valid: false,
@@ -118,6 +125,18 @@ export default {
         if (authResult) localStorage.setItem('jwt', authResult.accessToken);
         // TOFIX Throws a redirect error because of this
         router.push('/');
+      });
+    },
+    loginFB() {
+      // console.log('been there done that');
+      this.$auth.loginSocial({
+        connection: 'facebook',
+      });
+    },
+    loginG() {
+      // console.log('been there done that');
+      this.$auth.loginSocial({
+        connection: 'google-oauth2',
       });
     },
   },

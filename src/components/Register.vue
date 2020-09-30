@@ -57,6 +57,7 @@
                   <v-text-field
                     v-model="username"
                     :rules="usernameRules"
+                    :counter="20"
                     label="Username"
                     required
                   ></v-text-field>
@@ -98,7 +99,7 @@
 <script>
 
 export default {
-  name: 'Register',
+  name: 'RegisterComponent',
 
   data: () => ({
     valid: true,
@@ -119,6 +120,7 @@ export default {
     username: '',
     usernameRules: [
       (v) => !!v || 'Username is required',
+      (v) => v.length <= 20 || 'Username must be less than 20 characters',
     ],
     password: '',
     passwordRules: [

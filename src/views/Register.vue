@@ -1,19 +1,19 @@
 <template>
   <v-app>
     <v-main>
-      <Register/>
+      <RegisterComponent/>
     </v-main>
   </v-app>
 </template>
 
 <script>
 // @ is an alias to /src
-import Register from '@/components/Register.vue';
+import RegisterComponent from '@/components/Register.vue';
 
 export default {
-  name: 'register',
+  name: 'Register',
   components: {
-    Register,
+    RegisterComponent,
   },
 };
 </script>

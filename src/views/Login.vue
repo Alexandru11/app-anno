@@ -1,19 +1,19 @@
 <template>
   <v-app>
     <v-main>
-      <Login/>
+      <LoginComponent/>
     </v-main>
   </v-app>
 </template>
 
 <script>
 // @ is an alias to /src
-import Login from '@/components/Login.vue';
+import LoginComponent from '@/components/Login.vue';
 
 export default {
-  name: 'login',
+  name: 'Login',
   components: {
-    Login,
+    LoginComponent,
   },
 };
 </script>
