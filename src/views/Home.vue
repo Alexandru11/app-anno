@@ -5,6 +5,15 @@
       color="white"
       elevate-on-scroll>
       <v-btn @click="logout" text color="gray" >Logout</v-btn>
+      <v-divider></v-divider>
+      <v-avatar
+        class="hidden-sm-and-down"
+        color="grey darken-1 shrink"
+        size="54">
+        <img
+          :src="profilePicture"
+          :alt="profileName">
+      </v-avatar>
     </v-app-bar>
     <v-main>
 
@@ -62,10 +71,36 @@
     </v-toolbar>
 
     <v-container fluid>
-      <AnnotateComponent v-if="selectedTab === 'AnnotateTab'"/>
-      <ExtractorsComponent v-if="selectedTab === 'ExtractorsTab'"/>
-      <ListDocumentsComponent v-if="selectedTab === 'ListDocumentsTab'"/>
-      <StatisticsComponent v-if="selectedTab === 'StatisticsTab'"/>
+      <v-row>
+          <v-col
+            cols="12"
+            sm="1"
+          >
+          </v-col>
+          <v-col
+                cols="12"
+                sm="10"
+          >
+            <v-sheet
+              rounded="lg"
+              min-height="268"
+              outlined=true
+            >
+                <AnnotateComponent v-if="selectedTab === 'AnnotateTab'"/>
+                <ExtractorsComponent v-if="selectedTab === 'ExtractorsTab'"/>
+                <ListDocumentsComponent v-if="selectedTab === 'ListDocumentsTab'"/>
+                <StatisticsComponent v-if="selectedTab === 'StatisticsTab'"/>
+            </v-sheet>
+
+          </v-col>
+
+          <v-col
+            cols="12"
+            sm="1"
+          >
+          </v-col>
+      </v-row>
+
     </v-container>
     </v-main>
   </v-app>
@@ -81,7 +116,10 @@ import StatisticsComponent from '@/components/tabs/Statistics.vue';
 export default {
   name: 'Home',
   data: () => ({
+    tabs: '',
     selectedTab: 'AnnotateTab',
+    profilePicture: '',
+    profileName: 'Anonymous',
   }),
   components: {
     AnnotateComponent,
@@ -95,7 +133,14 @@ export default {
       this.$auth.logout();
       this.$router.push('/login');
     },
-
+  },
+  created() {
+    const { $auth } = this;
+    $auth.getProfileInfo(localStorage.getItem('jwt'), (err, authResult) => {
+      $auth.user = authResult;
+      this.profilePicture = authResult.picture ? authResult.picture : '';
+      this.profileName = authResult.given_name ? authResult.given_name : 'Anonymous';
+    });
   },
 };
 </script>

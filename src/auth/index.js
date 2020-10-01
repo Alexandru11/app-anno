@@ -69,7 +69,12 @@ export const useAuth0 = ({
       async logout(params = {}) {
         params.client_id = this.options.clientId;
         await this.auth0Client.logout(params);
+        this.user = {};
         this.setAuthenticationInfo(false);
+      },
+
+      async getProfileInfo(token, cb) {
+        await this.auth0Client.client.userInfo(token, cb);
       },
 
       setAuthenticationInfo(value) {

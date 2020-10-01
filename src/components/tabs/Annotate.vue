@@ -1,5 +1,5 @@
 <template>
-  <v-textarea placeholder="sfsdfdsfsdfs"></v-textarea>
+  <v-textarea></v-textarea>
 </template>
 
 <script>

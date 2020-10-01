@@ -55,7 +55,7 @@
                 </v-alert>
               </div>
               <v-card-actions class="d-flex justify-center">
-                <div class="d-flex flex-column text-center">
+                <div class="d-flex flex-column">
                     <v-btn :disabled="!valid" @click="login" text color="green" >
                       Login
                     </v-btn>
@@ -65,10 +65,12 @@
                     <v-btn @click="loginG" text color="red">
                       Login with Google
                     </v-btn>
-                    <v-chip :to="{ path: '/register' }" color="white"
-                            text-color="blue" class="text-center">
+                    <div class="text-center">
+                      <v-chip :to="{ path: '/register' }" color="white"
+                              text-color="blue" >
                         Sign up for app-anno
-                    </v-chip>
+                      </v-chip>
+                    </div>
                 </div>
               </v-card-actions>
             </v-card>
