@@ -4,6 +4,10 @@ import Home from '../views/Home.vue';
 import Login from '../views/Login.vue';
 import Register from '../views/Register.vue';
 import NoPermission from '../views/NoPermission.vue';
+import Annotate from '../components/tabs/Annotate.vue';
+import Extractors from '../components/tabs/Extractors.vue';
+import ListDocuments from '../components/tabs/ListDocuments.vue';
+import Statistics from '../components/tabs/Statistics.vue';
 
 Vue.use(VueRouter);
 
@@ -15,6 +19,40 @@ const routes = [
     meta: {
       requiresAuth: true,
     },
+    children: [
+      {
+        path: 'annotate',
+        name: 'Annotate',
+        component: Annotate,
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: 'extractors',
+        name: 'Extractors',
+        component: Extractors,
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: 'documents',
+        name: 'List of Documents',
+        component: ListDocuments,
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: 'statistics',
+        name: 'Statistics',
+        component: Statistics,
+        meta: {
+          requiresAuth: true,
+        },
+      },
+    ],
   },
   {
     path: '/login',
@@ -88,5 +126,4 @@ router.beforeEach((to, from, next) => {
     next();
   }
 });
-
 export default router;
