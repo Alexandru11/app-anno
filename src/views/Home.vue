@@ -14,13 +14,6 @@
           :src="profilePicture"
           :alt="profileName">
       </v-avatar>
-    </v-app-bar>
-    <v-main>
-    <v-toolbar
-      flat
-    >
-      <v-spacer></v-spacer>
-
       <template v-slot:extension>
         <v-tabs
           v-model="tabs"
@@ -56,9 +49,9 @@
             Extractors
           </v-tab>
         </v-tabs>
-      </template>
-    </v-toolbar>
-
+        </template>
+    </v-app-bar>
+    <v-main>
     <v-container fluid>
       <v-row>
           <v-col

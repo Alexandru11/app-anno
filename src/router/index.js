@@ -96,11 +96,7 @@ const router = new VueRouter({
  */
 
 router.beforeEach((to, from, next) => {
-  console.log(to);
-  console.log(from);
-  console.log(next);
   if (to.matched.some((record) => record.meta.requiresAuth)) {
-    console.log(to.matched.some((record) => record.meta.requiresAuth));
     if (localStorage.getItem('jwt') == null) {
       next({
         path: '/login',

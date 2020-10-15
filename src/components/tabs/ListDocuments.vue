@@ -1,5 +1,5 @@
 <template>
-  <v-textarea></v-textarea>
+  <v-img src="@/assets/coming-soon.jpg"></v-img>
 </template>
 
 <script>

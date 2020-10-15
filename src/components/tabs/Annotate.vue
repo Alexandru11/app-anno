@@ -165,13 +165,25 @@
     </v-expansion-panel-content>
     </v-expansion-panel>
   </v-expansion-panels>
+
   <v-textarea
+    id='mainTextArea'
     solo
     auto-grow
+    readonly
     :value="text"
-    v-on:click="onTextClick"
+    v-on:click="onTextSelection"
   >
+  Lorem Ipsum
   </v-textarea>
+  <template v-for="(text, index) in annotations">
+  <v-chip
+    draggable
+    :key="index"
+  >
+    {{ text }}
+  </v-chip>
+  </template>
 </div>
 </template>
 
@@ -192,15 +204,36 @@ export default {
       emotion: '',
     },
     text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    annotations: [],
   }),
   methods: {
     sentimentLabel() {
       return annotateFormatters.getSentimentLabel(this.document.sentiment);
     },
-    onTextClick() {
-      console.log(window.getSelection().toString());
+    onTextSelection() {
+      const selection = document.getSelection().toString().trim();
+      if (selection !== '') this.addAnnotation(selection);
+      if (window.getSelection) {
+        if (window.getSelection().empty) {
+          window.getSelection().empty();
+        } else if (window.getSelection().removeAllRanges) {
+          window.getSelection().removeAllRanges();
+        }
+      } else if (document.selection) {
+        document.selection.empty();
+      }
+    },
+    highlightRange(range) {
+      const newNode = document.createElement('mark');
+      range.surroundContents(newNode);
+    },
+    addAnnotation(annotation) {
+      this.annotations.push(annotation);
     },
   },
 };
 
 </script>
+
+<style scoped src="@/assets/styles/annotateStyles.css">
+</style>
