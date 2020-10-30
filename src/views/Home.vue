@@ -1,6 +1,7 @@
 <template>
   <v-app class="home">
     <v-app-bar
+      app
       color="white"
       elevate-on-scroll>
 
@@ -52,32 +53,9 @@
         </template>
     </v-app-bar>
     <v-main>
-    <v-container fluid>
-      <v-row>
-          <v-col
-            cols="12"
-            sm="1"
-          >
-          </v-col>
-          <v-col
-                cols="12"
-                sm="10"
-          >
-            <v-sheet
-              rounded="lg"
-              min-height="268"
-              outlined
-            >
-            <router-view />
-            </v-sheet>
-          </v-col>
-          <v-col
-            cols="12"
-            sm="1"
-          >
-          </v-col>
-      </v-row>
-    </v-container>
+      <v-container fluid>
+        <router-view />
+      </v-container>
     </v-main>
   </v-app>
 </template>

@@ -1,7 +1,11 @@
 <template>
-<div id="app">
-   <router-view />
-</div>
+<v-app>
+<v-main>
+  <v-container fluid>
+    <router-view />
+  </v-container>
+</v-main>
+</v-app>
 </template>
 
 <script>
@@ -17,3 +21,8 @@ export default {
   }),
 };
 </script>
+
+<style>
+  @import './assets/styles/reactiveText.css';
+  @import './assets/styles/main.css';
+</style>

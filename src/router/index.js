@@ -1,13 +1,13 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Home from '../views/Home.vue';
-import Login from '../views/Login.vue';
-import Register from '../views/Register.vue';
-import NoPermission from '../views/NoPermission.vue';
-import Annotate from '../components/tabs/Annotate.vue';
-import Extractors from '../components/tabs/Extractors.vue';
-import ListDocuments from '../components/tabs/ListDocuments.vue';
-import Statistics from '../components/tabs/Statistics.vue';
+import Home from '@/views/Home.vue';
+import Login from '@/views/Login.vue';
+import Register from '@/views/Register.vue';
+import NoPermission from '@/views/NoPermission.vue';
+import Annotate from '@/views/tab/Annotate.vue';
+import Extractors from '@/views/tab/Extractors.vue';
+import ListDocuments from '@/views/tab/ListDocuments.vue';
+import Statistics from '@/views/tab/Statistics.vue';
 
 Vue.use(VueRouter);
 
@@ -107,16 +107,14 @@ router.beforeEach((to, from, next) => {
     }
   } else if (localStorage.getItem('jwt') != null && localStorage.getItem('isAuthenticated')) {
     next({
-      path: '/',
-      params: { nextUrl: '/' },
+      path: '/annotate',
     });
   } else if (to.fullPath.includes('access_token') && localStorage.getItem('isAuthenticated')) {
     const uriParams = new URLSearchParams(to.fullPath.replace('/', '?'));
     const accessToken = uriParams.get('access_token');
     window.localStorage.setItem('jwt', accessToken);
     next({
-      path: '/',
-      params: { nextUrl: '/' },
+      path: '/annotate',
     });
   } else {
     next();

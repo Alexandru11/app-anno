@@ -1,0 +1,17 @@
+#mainTextArea {
+    width: 100%; 
+    height: 100%;
+}
+
+#mainTextArea > span:hover {
+    background-color: greenyellow;
+}
+
+.token-highlight {
+    text-shadow: 
+       3px 0px 3px green,
+      -3px 0px 3px green,
+       6px 0px 6px green,
+      -6px 0px 6px green;
+  }
+

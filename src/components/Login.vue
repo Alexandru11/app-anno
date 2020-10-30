@@ -126,7 +126,7 @@ export default {
         }
         if (authResult) localStorage.setItem('jwt', authResult.accessToken);
         // TOFIX Throws a redirect error because of this
-        router.push('/');
+        router.push('/annotate');
       });
     },
     loginFB() {
