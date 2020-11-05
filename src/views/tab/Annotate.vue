@@ -8,10 +8,11 @@
     >
       <v-sheet
         rounded="lg"
-        min-height="268"
         outlined
       >
-        <FileExplorer/>
+        <FileExplorer
+          @set-main-content="setMainContent"
+        />
       </v-sheet>
     </v-col>
     <v-col
@@ -267,7 +268,7 @@ import TopicLabelerSubComponent from '@/components/tabs/annotate/topicLabeler.vu
 import AnnotationMenuComponent from '@/components/tabs/annotate/annotationMenu.vue';
 import SideAnnotationMenuComponent from '@/components/tabs/annotate/sideAnnotationMenu.vue';
 import annotateFormatters from '@/components/formatter/annotateFormatters';
-import FileExplorer from '@/components/FileExplorer.vue';
+import FileExplorer from '@/components/tabs/annotate/fileExplorer.vue';
 import ReactiveText from '@/components/tabs/annotate/reactiveText.vue';
 
 // import mixin from '../../mixins/validateToken';
@@ -298,6 +299,9 @@ export default {
     },
   }),
   methods: {
+    setMainContent(text) {
+      this.document.text = text;
+    },
     sentimentLabel() {
       return annotateFormatters.getSentimentLabel(this.document.sentiment);
     },
@@ -319,6 +323,7 @@ export default {
     update(value) {
       this.annotation.menuStatus = value;
     },
+
     alert() {
       this.alert();
     },

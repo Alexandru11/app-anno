@@ -18,35 +18,18 @@
 </template>
 
 <script>
+import reactiveTextModel from '@/models/ReactiveTextModel';
 
 export default {
   props: ['text', 'onSavedAnnotation'],
-  data: () => ({
-    selection: {
-      value: '',
-      startElement: null,
-      endElement: null,
-    },
-    textTokens: [],
-    resetOffsets() {
-      this.selection.startElement = null;
-      this.selection.endElement = null;
-    },
-  }),
+  data: reactiveTextModel,
   created() {
-    const tokens = this.text.split(/( )/g);
-    this.textTokens = tokens.map((token, idx) => {
-      if (token === ' ') {
-        return {
-          key: `token-space-${idx}`,
-          value: token,
-        };
-      }
-      return {
-        key: `token-${idx}`,
-        value: token.trim(),
-      };
-    });
+    this.tokenizeText();
+  },
+  watch: {
+    text() {
+      this.tokenizeText();
+    },
   },
   methods: {
     onSelectionUp(event) {
@@ -83,6 +66,21 @@ export default {
       } else if (document.selection) {
         document.selection.empty();
       }
+    },
+    tokenizeText() {
+      const tokens = this.text.split(/( )/g);
+      this.textTokens = tokens.map((token, idx) => {
+        if (token === ' ') {
+          return {
+            key: `token-space-${idx}`,
+            value: token,
+          };
+        }
+        return {
+          key: `token-${idx}`,
+          value: token.trim(),
+        };
+      });
     },
   },
 };
