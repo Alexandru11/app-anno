@@ -54,6 +54,7 @@ import fileExplorerModel from '@/models/FileExplorerModel';
 import browser from '@/utils/FileSystemBrowser';
 
 export default {
+  name: 'FileExplorer',
   data: fileExplorerModel,
   methods: {
     async onBrowseFolder() {

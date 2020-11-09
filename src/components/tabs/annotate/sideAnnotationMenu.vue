@@ -22,19 +22,14 @@
 
               <v-list-item-action>
                 <v-row>
-                <v-btn
-                  small
+                  <v-icon                  small
                   left
                   text
                   depressed
-                >
-                  <v-icon
                     color="orange darken-4"
-                    left
                   >
                     mdi-pencil
                   </v-icon>
-                </v-btn>
                 <v-checkbox
                   :input-value="active"
                   color="deep-purple accent-4"
@@ -50,6 +45,7 @@
 
 <script>
 export default {
+  name: 'SideAnnotationMenu',
   props: ['annotations'],
   data: () => ({
   }),

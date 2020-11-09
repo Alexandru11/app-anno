@@ -190,55 +190,27 @@
         </v-expansion-panel>
       </v-expansion-panels>
 
-      <!-- <v-textarea
-        id='mainTextArea'
-        solo
-        auto-grow
-        readonly
-        :value="document.text"
-      >
-      </v-textarea> -->
-
-      <!-- <v-sheet
-          v-on:click="onTextSelection"
-      >
-        <textarea-highlight
-          :queries="annotations"
-          :highlightComponent="MyClickableComponent"
-          @customlistener="alert"
-        >
-          {{ document.text }}
-        </textarea-highlight>
-      </v-sheet> -->
-
       <reactiveText
         ref="reactiveText"
         :text="document.text"
         @selected-text="onTextSelection"
+        class="pa-6"
       >
       </reactiveText>
 
-      <v-divider> </v-divider>
+          <v-text-field
+            id="text"
+            ref="annotation"
+            solo
+            placeholder="Write your custom Entity"
+            v-model="annotation.value"
+            :rules="annotation.rules"
+            prepend-inner-icon="mdi-plus-box-outline"
+            @click:prepend-inner="doCreateEntity"
+            @keydown.enter="doCreateEntity"
+            class="px-4"
+          ></v-text-field>
 
-      <v-text-field
-        id="text"
-        ref="annotation"
-        solo
-        placeholder="Write your custom Entity"
-        v-model="annotation.value"
-        :rules="annotation.rules"
-        append-outer-icon="mdi-plus-box-outline"
-        @click:append-outer="doCreateEntity"
-        @keydown.enter="doCreateEntity"
-      ></v-text-field>
-      <template v-for="(text, index) in annotations">
-      <v-chip
-        draggable
-        :key="index"
-      >
-        {{ text }}
-      </v-chip>
-  </template>
       </v-sheet>
     </v-col>
     <v-col
@@ -283,6 +255,9 @@ export default {
     reactiveText: ReactiveText,
   },
   data: () => ({
+    instruction: {
+      text: '',
+    },
     document: {
       topic: '',
       sentiment: '',

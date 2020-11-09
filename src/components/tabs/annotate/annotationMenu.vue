@@ -99,6 +99,7 @@
 
 <script>
 export default {
+  name: 'AnnotationMenu',
   props: ['dialog', 'selectedText'],
   data: () => ({
     items: ['Person', 'Organization', 'Geo-political entity'],

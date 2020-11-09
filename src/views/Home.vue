@@ -69,7 +69,6 @@ export default {
     profilePicture: '',
     profileName: 'Anonymous',
   }),
-  components: {},
   methods: {
     logout() {
       localStorage.removeItem('jwt');

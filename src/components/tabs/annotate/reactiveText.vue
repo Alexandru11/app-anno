@@ -21,6 +21,7 @@
 import reactiveTextModel from '@/models/ReactiveTextModel';
 
 export default {
+  name: 'ReactiveText',
   props: ['text', 'onSavedAnnotation'],
   data: reactiveTextModel,
   created() {
@@ -44,6 +45,7 @@ export default {
       this.selection.startElement = event.target;
     },
     tagValues(list) {
+      // #TODO to apply colored label to selected key phrases in list
       console.log(list);
     },
     saveSelection() {
@@ -69,17 +71,29 @@ export default {
     },
     tokenizeText() {
       const tokens = this.text.split(/( )/g);
-      this.textTokens = tokens.map((token, idx) => {
+
+      tokens.forEach((token, idx) => {
         if (token === ' ') {
-          return {
+          this.textTokens.push({
             key: `token-space-${idx}`,
             value: token,
-          };
+          });
+        } else if (token.match(/[|\\/~^:,.;?!&%$@*+]/g)) {
+          const trimmed = token.replace(/[|\\/~^:,.;?!&%$@*+]/g, '');
+          const matched = token.match(/[|\\/~^:,.;?!&%$@*+]/g);
+          matched.splice(token.indexOf(trimmed), 0, trimmed);
+          matched.forEach((m, mIdx) => {
+            this.textTokens.push({
+              key: `token-${idx}${mIdx}`,
+              value: m,
+            });
+          });
+        } else {
+          this.textTokens.push({
+            key: `token-${idx}`,
+            value: token.trim(),
+          });
         }
-        return {
-          key: `token-${idx}`,
-          value: token.trim(),
-        };
       });
     },
   },
