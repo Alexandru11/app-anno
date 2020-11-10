@@ -267,6 +267,8 @@ export default {
     annotations: [],
     annotation: {
       value: '',
+      startPosition: null,
+      endPosition: null,
       rules: [
         (v) => !!v || 'Define an annotation or selection first',
       ],
@@ -280,10 +282,16 @@ export default {
     sentimentLabel() {
       return annotateFormatters.getSentimentLabel(this.document.sentiment);
     },
-    onTextSelection(value) {
+    onTextSelection({
+      value,
+      startPosition,
+      endPosition,
+    }) {
       if (value !== '') {
         this.annotation.value = value;
         this.annotation.menuStatus = true;
+        this.annotation.startPosition = startPosition;
+        this.annotation.endPosition = endPosition;
         // this.doCreateEntity();
       }
     },

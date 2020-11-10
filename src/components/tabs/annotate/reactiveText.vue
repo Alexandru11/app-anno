@@ -10,7 +10,9 @@
           :id="token.key"
           @mouseup="onSelectionUp"
           @mousedown="onSelectionDown"
-          class="token">
+          class="token"
+          :data-start-position="token.startPosition"
+          :data-end-position="token.endPosition">
       {{ token.value }}
     </span>
   </div>
@@ -19,6 +21,8 @@
 
 <script>
 import reactiveTextModel from '@/models/ReactiveTextModel';
+
+const SPECIAL_CHARS = /[|\\/~^:,.;?!&%$@*+]/g;
 
 export default {
   name: 'ReactiveText',
@@ -34,10 +38,11 @@ export default {
   },
   methods: {
     onSelectionUp(event) {
-      this.selection.endElement = this.$jQuery(event.target).next();
-      this.saveSelection();
-      this.$emit('selected-text', this.selection.value);
+      this.selection.endElement = event.target;
+      this.saveSelectionValue();
+      this.saveSelectionPosition();
 
+      this.emitSelectionToParent();
       this.resetWindowSelection();
       this.resetOffsets();
     },
@@ -48,15 +53,22 @@ export default {
       // #TODO to apply colored label to selected key phrases in list
       console.log(list);
     },
-    saveSelection() {
+    emitSelectionToParent() {
+      this.$emit('selected-text', this.selection);
+    },
+    saveSelectionValue() {
       let highlight = '';
       this.$jQuery.each(
         this.$jQuery(this.selection.startElement)
-          .nextUntil(this.selection.endElement).addBack(), (index, elem) => {
+          .nextUntil(this.selection.endElement.nextElementSibling).addBack(), (index, elem) => {
           highlight += elem.innerText;
         },
       );
       this.selection.value = highlight;
+    },
+    saveSelectionPosition() {
+      this.selection.startPosition = this.selection.startElement.getAttribute('data-start-position');
+      this.selection.endPosition = this.selection.endElement.getAttribute('data-end-position');
     },
     resetWindowSelection() {
       if (window.getSelection) {
@@ -74,28 +86,30 @@ export default {
 
       tokens.forEach((token, idx) => {
         if (token === ' ') {
-          this.textTokens.push({
-            key: `token-space-${idx}`,
-            value: token,
-          });
-        } else if (token.match(/[|\\/~^:,.;?!&%$@*+]/g)) {
-          const trimmed = token.replace(/[|\\/~^:,.;?!&%$@*+]/g, '');
-          const matched = token.match(/[|\\/~^:,.;?!&%$@*+]/g);
+          this.addToken(`token-space-${idx}`, token);
+        } else if (token.match(SPECIAL_CHARS)) {
+          const trimmed = token.replace(SPECIAL_CHARS, '');
+          const matched = token.match(SPECIAL_CHARS);
           matched.splice(token.indexOf(trimmed), 0, trimmed);
           matched.forEach((m, mIdx) => {
-            this.textTokens.push({
-              key: `token-${idx}${mIdx}`,
-              value: m,
-            });
+            this.addToken(`token-${idx}${mIdx}`, m);
           });
         } else {
-          this.textTokens.push({
-            key: `token-${idx}`,
-            value: token.trim(),
-          });
+          this.addToken(`token-${idx}`, token);
         }
       });
     },
+    addToken(key, value) {
+      const startPosition = this.textTokens.reduce((acc, cv) => acc + cv.value.length, 0);
+      const endPosition = startPosition + value.length;
+      this.textTokens.push({
+        key,
+        value,
+        startPosition,
+        endPosition,
+      });
+    },
+
   },
 };
 </script>

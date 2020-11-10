@@ -1,4 +1,4 @@
-const model = (function () {
+const model = (function model() {
   return () => ({
     open: ['public'],
     files: {
