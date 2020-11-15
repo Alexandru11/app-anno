@@ -50,8 +50,8 @@
 </template>
 
 <script>
-import fileExplorerModel from '@/models/FileExplorerModel';
-import browser from '@/utils/FileSystemBrowser';
+import fileExplorerModel from '@/models/tabs/annotate/FileExplorerModel';
+import manager from '@/utils/FileSystemManager';
 
 export default {
   name: 'FileExplorer',
@@ -60,21 +60,34 @@ export default {
     async onBrowseFolder() {
       const that = this;
       try {
-        await browser.browseFolder();
-        that.items = await browser.getFiles();
+        await manager.browseFolder();
+        that.items = await manager.getFiles();
       } catch (error) {
         console.log(error, 'Process aborted by user');
       }
     },
 
     async onItemClick(items) {
-      if (items.length) await this.loadContentForFile(items[0]);
+      try {
+        if (items.length) {
+          await this.sendContentForFile(items[0]);
+
+          manager.setDocFile(items[0]);
+          const annotationFileName = manager.convertFileType(items[0]);
+          manager.setAnnotationFile(annotationFileName);
+          // pre-create json file with writable rights for already opened file
+          await manager.writeToFile(annotationFileName, true);
+        }
+      } catch (err) {
+        console.log(err);
+      }
     },
 
-    async loadContentForFile(file) {
-      const content = await browser.getFileContent(file) || '';
+    async sendContentForFile(file) {
+      const content = await manager.getFileContent(file) || '';
       this.$emit('set-main-content', content);
     },
+
   },
 };
 </script>

@@ -23,6 +23,13 @@
         >
           <v-tabs-slider></v-tabs-slider>
           <v-tab
+            href="#tab-tasks"
+            to="/tasks"
+          >
+            Tasks
+          </v-tab>
+
+          <v-tab
             href="#tab-annotate"
             to="/annotate"
           >

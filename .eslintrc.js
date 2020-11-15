@@ -18,6 +18,8 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-param-reassign': 0,
+    'import/no-extraneous-dependencies': ['error', {'devDependencies': true}],
+    'no-new': 0,
   },
 
   overrides: [

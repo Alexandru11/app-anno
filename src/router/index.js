@@ -4,6 +4,7 @@ import Home from '@/views/Home.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
 import NoPermission from '@/views/NoPermission.vue';
+import Tasks from '@/views/tab/Tasks.vue';
 import Annotate from '@/views/tab/Annotate.vue';
 import Extractors from '@/views/tab/Extractors.vue';
 import ListDocuments from '@/views/tab/ListDocuments.vue';
@@ -20,6 +21,14 @@ const routes = [
       requiresAuth: true,
     },
     children: [
+      {
+        path: 'tasks/',
+        name: 'Tasks',
+        component: Tasks,
+        meta: {
+          requiresAuth: true,
+        },
+      },
       {
         path: 'annotate',
         name: 'Annotate',

@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import reactiveTextModel from '@/models/ReactiveTextModel';
+import reactiveTextModel from '@/models/tabs/annotate/ReactiveTextModel';
 
 const SPECIAL_CHARS = /[|\\/~^:,.;?!&%$@*+]/g;
 
@@ -28,11 +28,9 @@ export default {
   name: 'ReactiveText',
   props: ['text', 'onSavedAnnotation'],
   data: reactiveTextModel,
-  created() {
-    this.tokenizeText();
-  },
   watch: {
     text() {
+      this.clearContent();
       this.tokenizeText();
     },
   },
@@ -92,7 +90,7 @@ export default {
           const matched = token.match(SPECIAL_CHARS);
           matched.splice(token.indexOf(trimmed), 0, trimmed);
           matched.forEach((m, mIdx) => {
-            this.addToken(`token-${idx}${mIdx}`, m);
+            this.addToken(`token-${idx}.${mIdx}`, m);
           });
         } else {
           this.addToken(`token-${idx}`, token);
@@ -108,6 +106,10 @@ export default {
         startPosition,
         endPosition,
       });
+    },
+    clearContent() {
+      this.textTokens = [];
+      // this.$jQuery(this.$refs.mainTextArea).empty();
     },
 
   },

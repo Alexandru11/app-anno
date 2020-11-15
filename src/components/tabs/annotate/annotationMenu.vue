@@ -111,13 +111,13 @@ export default {
       this.$emit('updateDialog', false);
     },
     saveAnnotation() {
+      this.switchOffDialog();
       /**
        * Save annotation in the database
        * For now we emit an event to the parent
        *
        */
       this.$emit('doSaveAnnotation');
-      this.switchOffDialog();
     },
   },
   watch: {

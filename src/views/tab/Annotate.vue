@@ -10,9 +10,9 @@
         rounded="lg"
         outlined
       >
-        <FileExplorer
+        <!-- <FileExplorer
           @set-main-content="setMainContent"
-        />
+        /> -->
       </v-sheet>
     </v-col>
     <v-col
@@ -204,7 +204,7 @@
             solo
             placeholder="Write your custom Entity"
             v-model="annotation.value"
-            :rules="annotation.rules"
+            :rules="rules.annotation"
             prepend-inner-icon="mdi-plus-box-outline"
             @click:prepend-inner="doCreateEntity"
             @keydown.enter="doCreateEntity"
@@ -226,7 +226,7 @@
 
   <annotationMenu
       :selectedText="annotation.value"
-      :dialog="annotation.menuStatus"
+      :dialog="menuStatus"
       @updateDialog="update"
       @doSaveAnnotation="addAnnotation"
   >
@@ -240,41 +240,21 @@ import TopicLabelerSubComponent from '@/components/tabs/annotate/topicLabeler.vu
 import AnnotationMenuComponent from '@/components/tabs/annotate/annotationMenu.vue';
 import SideAnnotationMenuComponent from '@/components/tabs/annotate/sideAnnotationMenu.vue';
 import annotateFormatters from '@/components/formatter/annotateFormatters';
-import FileExplorer from '@/components/tabs/annotate/fileExplorer.vue';
+// import FileExplorer from '@/components/tabs/annotate/fileExplorer.vue';
 import ReactiveText from '@/components/tabs/annotate/reactiveText.vue';
-
+import fsManager from '@/utils/FileSystemManager';
+import annotateModel from '@/models/AnnotateModel';
 // import mixin from '../../mixins/validateToken';
 
 export default {
   name: 'AnnotateComponent',
   components: {
-    FileExplorer,
     topicLabeler: TopicLabelerSubComponent,
     annotationMenu: AnnotationMenuComponent,
     sideAnnotationMenu: SideAnnotationMenuComponent,
     reactiveText: ReactiveText,
   },
-  data: () => ({
-    instruction: {
-      text: '',
-    },
-    document: {
-      topic: '',
-      sentiment: '',
-      emotion: '',
-      text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-    },
-    annotations: [],
-    annotation: {
-      value: '',
-      startPosition: null,
-      endPosition: null,
-      rules: [
-        (v) => !!v || 'Define an annotation or selection first',
-      ],
-      menuStatus: false,
-    },
-  }),
+  data: annotateModel,
   methods: {
     setMainContent(text) {
       this.document.text = text;
@@ -289,24 +269,37 @@ export default {
     }) {
       if (value !== '') {
         this.annotation.value = value;
-        this.annotation.menuStatus = true;
         this.annotation.startPosition = startPosition;
         this.annotation.endPosition = endPosition;
+        this.menuStatus = true;
         // this.doCreateEntity();
       }
     },
     addAnnotation() {
-      this.annotations.push(this.annotation.value);
-      this.annotation.value = '';
+      this.annotations.push({
+        entity: this.annotation.value,
+        startPosition: this.annotation.startPosition,
+        endPosition: this.annotation.endPosition,
+      });
+
+      // persist annotations somehow
+      // write to a .json file with the same name as opened one
+      fsManager.writeToFile(fsManager.getAnnotationFile(), false, JSON.stringify({
+        annotations: this.annotations,
+      }));
+
+      // reset selection to default
+      this.resetDefaultAnnotation();
+
+      // color effect on already annotated parts
       this.$refs.reactiveText.tagValues(this.annotations);
     },
     doCreateEntity() {
-      if (this.$refs.annotation.validate()) this.annotation.menuStatus = true;
+      if (this.$refs.annotation.validate()) this.menuStatus = true;
     },
     update(value) {
-      this.annotation.menuStatus = value;
+      this.menuStatus = value;
     },
-
     alert() {
       this.alert();
     },

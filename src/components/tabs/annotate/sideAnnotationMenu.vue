@@ -12,12 +12,12 @@
         <template v-slot:default="{ item }">
 
           <v-list-item
-            :value="item"
+            :value="item.entity"
             active-class="deep-purple--text text--accent-4"
           >
             <template v-slot:default="{ active }">
               <v-list-item-content>
-                <v-list-item-title v-text="item"></v-list-item-title>
+                <v-list-item-title v-text="item.entity"></v-list-item-title>
               </v-list-item-content>
 
               <v-list-item-action>
