@@ -64,10 +64,20 @@
         <router-view />
       </v-container>
     </v-main>
+  <v-footer padless app>
+    <v-alert v-if="success !== undefined" type="success">
+      {{ success }}
+    </v-alert>
+    <v-alert v-if="error !== undefined" type="error">
+      {{ error }}
+    </v-alert>
+  </v-footer>
   </v-app>
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
   name: 'Home',
   data: () => ({
@@ -91,5 +101,9 @@ export default {
       this.profileName = authResult.given_name ? authResult.given_name : 'Anonymous';
     });
   },
+  computed: mapState([
+    'success',
+    'error',
+  ]),
 };
 </script>

@@ -21,8 +21,9 @@
               </v-textarea>
               <v-row>
                 <v-combobox
-                  v-model="model"
-                  :items="items"
+                  v-if="params.labels"
+                  v-model="labelModel"
+                  :items="params.labels.map((l) => l.display_name)"
                   :search-input.sync="search"
                   hide-selected
                   hint="Maximum of 1 entity type"
@@ -35,7 +36,7 @@
                     <v-list-item>
                       <v-list-item-content>
                         <v-list-item-title>
-                          No results matching "<strong>{{ search }}</strong>".
+                          No labels matching "<strong>{{ search }}</strong>".
                            Press <kbd>enter</kbd> to create a new one
                         </v-list-item-title>
                       </v-list-item-content>
@@ -43,7 +44,7 @@
                   </template>
                 </v-combobox>
                 <v-spacer></v-spacer>
-                <v-radio-group
+                <!-- <v-radio-group
                   label="Define event type"
                   :mandatory="false"
                 >
@@ -69,7 +70,7 @@
                     label="Transfer money"
                     value="radio-5"
                   ></v-radio>
-                </v-radio-group>
+                </v-radio-group> -->
               </v-row>
             </v-col>
           </v-container>
@@ -100,10 +101,9 @@
 <script>
 export default {
   name: 'AnnotationMenu',
-  props: ['dialog', 'selectedText'],
+  props: ['dialog', 'selectedText', 'params'],
   data: () => ({
-    items: ['Person', 'Organization', 'Geo-political entity'],
-    model: ['Person'],
+    labelModel: [],
     search: null,
   }),
   methods: {
@@ -117,13 +117,17 @@ export default {
        * For now we emit an event to the parent
        *
        */
-      this.$emit('doSaveAnnotation');
+      const annotationProperties = {
+        labels: this.labelModel,
+      };
+
+      this.$emit('doSaveAnnotation', annotationProperties);
     },
   },
   watch: {
-    model(val) {
+    labelModel(val) {
       if (val.length > 1) {
-        this.$nextTick(() => this.model.pop());
+        this.$nextTick(() => this.labelModel.pop());
       }
     },
   },

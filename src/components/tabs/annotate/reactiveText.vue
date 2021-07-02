@@ -20,14 +20,29 @@
 </template>
 
 <script>
-import reactiveTextModel from '@/models/tabs/annotate/ReactiveTextModel';
-
 const SPECIAL_CHARS = /[|\\/~^:,.;?!&%$@*+]/g;
 
 export default {
   name: 'ReactiveText',
   props: ['text', 'onSavedAnnotation'],
-  data: reactiveTextModel,
+  data: () => ({
+    selection: {
+      value: '',
+      startElement: null,
+      endElement: null,
+      startPosition: null,
+      endPosition: null,
+    },
+    textTokens: [],
+
+    resetOffsets() {
+      this.selection.startElement = null;
+      this.selection.endElement = null;
+
+      this.selection.startPosition = null;
+      this.selection.endPosition = null;
+    },
+  }),
   watch: {
     text() {
       this.clearContent();

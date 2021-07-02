@@ -6,8 +6,10 @@ import store from './store';
 import vuetify from './plugins/vuetify';
 import startServer from './mockserver/index';
 import env from './utils/Env';
-import { domain, clientId, databaseName } from '../auth_config.json';
+import config from './utils/authConfigs';
 import { Auth0Plugin } from './auth';
+
+const { domain, clientId, databaseName } = config;
 
 if (env.isDevelopment) {
   startServer();

@@ -1,3 +1,4 @@
+/** DEPRECATED */
 export default (function Manager() {
   let dirHandle;
   let docFile;

@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
+    "prod": "serve -s dist",
+    "deploy": "npm run build && cf push",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
@@ -19,12 +21,13 @@
     "jquery": "^3.5.1",
     "jwks-rsa": "^1.10.1",
     "jwt-decode": "^3.0.0",
+    "serve": "^12.0.0",
     "uuid": "^8.3.1",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
     "vue-text-highlight": "^2.0.10",
     "vuetify": "^2.2.11",
-    "vuex": "^3.4.0"
+    "vuex": "^3.6.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",

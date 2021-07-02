@@ -7,9 +7,10 @@ const model = (function model() {
       { text: 'Type of task', value: 'type' },
       { text: 'Maximum number of Users ', value: 'maxUsers' },
       { text: '', value: 'data-table-expand' },
-      { text: '', value: 'data-table-expand' },
+      { text: '', value: 'data-table-select' },
     ],
     tasks: [],
+    selected: [],
   });
 }());
 

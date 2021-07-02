@@ -1,6 +1,12 @@
 <template>
 
 <div>
+<v-btn
+  v-on:click="submitAnnotations"
+  :disabled="disabledSubmit"
+>
+  Submit
+</v-btn>
 <v-row>
     <v-col
       cols="12"
@@ -10,7 +16,11 @@
         rounded="lg"
         outlined
       >
-        <!-- <FileExplorer
+        <taskOverview
+        :taskDescription="$store.state.currentTask.text"
+        :params="task.params"
+        ></taskOverview>
+        <!-- DEPRECATED <FileExplorer
           @set-main-content="setMainContent"
         /> -->
       </v-sheet>
@@ -198,18 +208,18 @@
       >
       </reactiveText>
 
-          <v-text-field
-            id="text"
-            ref="annotation"
-            solo
-            placeholder="Write your custom Entity"
-            v-model="annotation.value"
-            :rules="rules.annotation"
-            prepend-inner-icon="mdi-plus-box-outline"
-            @click:prepend-inner="doCreateEntity"
-            @keydown.enter="doCreateEntity"
-            class="px-4"
-          ></v-text-field>
+      <v-text-field
+        id="text"
+        ref="annotation"
+        solo
+        placeholder="Write your custom Entity"
+        v-model="annotation.value"
+        :rules="rules.annotation"
+        prepend-inner-icon="mdi-plus-box-outline"
+        @click:prepend-inner="doCreateEntity"
+        @keydown.enter="doCreateEntity"
+        class="px-4"
+      ></v-text-field>
 
       </v-sheet>
     </v-col>
@@ -227,6 +237,7 @@
   <annotationMenu
       :selectedText="annotation.value"
       :dialog="menuStatus"
+      :params="task.params"
       @updateDialog="update"
       @doSaveAnnotation="addAnnotation"
   >
@@ -239,12 +250,12 @@
 import TopicLabelerSubComponent from '@/components/tabs/annotate/topicLabeler.vue';
 import AnnotationMenuComponent from '@/components/tabs/annotate/annotationMenu.vue';
 import SideAnnotationMenuComponent from '@/components/tabs/annotate/sideAnnotationMenu.vue';
+import TaskOverviewComponent from '@/components/tabs/annotate/taskOverview.vue';
 import annotateFormatters from '@/components/formatter/annotateFormatters';
-// import FileExplorer from '@/components/tabs/annotate/fileExplorer.vue';
 import ReactiveText from '@/components/tabs/annotate/reactiveText.vue';
-import fsManager from '@/utils/FileSystemManager';
+// import fsManager from '@/utils/FileSystemManager';
 import annotateModel from '@/models/AnnotateModel';
-// import mixin from '../../mixins/validateToken';
+import taskApi from '@/api/TaskApi';
 
 export default {
   name: 'AnnotateComponent',
@@ -253,6 +264,7 @@ export default {
     annotationMenu: AnnotationMenuComponent,
     sideAnnotationMenu: SideAnnotationMenuComponent,
     reactiveText: ReactiveText,
+    taskOverview: TaskOverviewComponent,
   },
   data: annotateModel,
   methods: {
@@ -275,18 +287,32 @@ export default {
         // this.doCreateEntity();
       }
     },
-    addAnnotation() {
+    submitAnnotations() {
+      try {
+        // set annotation with service
+
+        this.$store.commit('setSuccess', 'Annotations submitted successfully!');
+        this.$store.dispatch('resetSuccess');
+        this.retreiveInitialState();
+      } catch (e) {
+        this.$store.commit('setError', 'This is us, not you!');
+        this.$store.dispatch('resetError');
+      }
+    },
+    addAnnotation(annotationProperties) {
       this.annotations.push({
         entity: this.annotation.value,
         startPosition: this.annotation.startPosition,
         endPosition: this.annotation.endPosition,
+        annotationProperties,
       });
 
       // persist annotations somehow
+      // #DEPRECATED
       // write to a .json file with the same name as opened one
-      fsManager.writeToFile(fsManager.getAnnotationFile(), false, JSON.stringify({
-        annotations: this.annotations,
-      }));
+      // fsManager.writeToFile(fsManager.getAnnotationFile(), false, JSON.stringify({
+      //   annotations: this.annotations,
+      // }));
 
       // reset selection to default
       this.resetDefaultAnnotation();
@@ -303,6 +329,30 @@ export default {
     alert() {
       this.alert();
     },
+    retreiveInitialState() {
+      this.$store.commit('resetDefaultTask');
+      this.resetAnnotationsContent();
+      this.resetDocumentOverview();
+      this.resetTaskParams();
+    },
+  },
+  computed: {
+    disabledSubmit() {
+      return !(this.$store.state.currentTask.id && this.annotations.length);
+    },
+  },
+  created() {
+    const that = this;
+    if (this.$store.state.currentTask.id) {
+      taskApi.taskParams(this.$store.state.currentTask.id, (result) => {
+        that.$store.commit('setError', undefined);
+        that.document.text = result.parameter.values.text;
+        that.task.params.labels = result.parameter.values.labels;
+        console.log(result);
+      });
+    } else {
+      this.$store.commit('setError', 'Please choose a task first!');
+    }
   },
 };
 

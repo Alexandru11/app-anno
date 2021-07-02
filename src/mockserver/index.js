@@ -1,19 +1,25 @@
-import { Server, Model } from 'miragejs';
+import { Server, Model, belongsTo } from 'miragejs';
 import hookTaskRoutes from './routes/task';
-import taskFactory from './factories/task';
+import objectFactories from './factories/objects';
 
 export default function createServer() {
   new Server({
-    factories: { ...taskFactory },
+    factories: { ...objectFactories },
 
     models: {
       task: Model,
+      parameter: Model.extend({
+        task: belongsTo(),
+      }),
     },
 
     seeds(server) {
-      server.createList('task', 10);
+      server.createList('task', 10).forEach((task) => {
+        server.create('parameter', { task });
+      });
     },
     routes() {
+      this.passthrough('http://localhost:4003/**');
       this.namespace = 'api';
 
       hookTaskRoutes(this);

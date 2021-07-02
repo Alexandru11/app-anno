@@ -1,3 +1,4 @@
+/** DEPRECATED */
 const model = (function model() {
   return () => ({
     open: ['public'],
