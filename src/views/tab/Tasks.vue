@@ -39,38 +39,54 @@
 <script>
 import tasksModel from '@/models/TasksModel';
 import taskApi from '@/api/TaskApi';
+import enums from '@/utils/enums';
 
 export default {
   name: 'TasksComponent',
   data: tasksModel,
   methods: {
     onRowSelected(oEvent) {
-      const { id } = oEvent.item;
-      if (oEvent.value === false && this.selected.includes(id)) {
-        this.selected.splice(this.selected.indexOf(id), 1);
+      const { _id } = oEvent.item;
+      if (oEvent.value === false && this.selected.includes(_id)) {
+        this.selected.splice(this.selected.indexOf(_id), 1);
       } else {
-        this.selected.push(id);
+        this.selected.push(_id);
       }
-
       console.log(this.selected);
     },
     startAnnotation() {
       // lockUserOnTask(this.userName, this.selected);
       if (!this.selected.length) {
-        this.$store.commit('setError', 'Please choose a task first!');
-        this.$store.dispatch('resetError');
+        this.throwError('Please choose a task first!');
       } else {
-        this.$store.commit('setTaskText', this.tasks.find((task) => task.id === this.selected[0]).description);
-        this.$store.commit('setTaskId', this.selected[0]);
+        // eslint-disable-next-line no-underscore-dangle
+        this.setNewTask();
         this.$router.push('/annotate');
       }
       // go-to Annotation tab
     },
+    setNewTask() {
+      const store = this.$store;
+      // eslint-disable-next-line no-underscore-dangle
+      store.commit('setTaskText', this.tasks.find((task) => task._id === this.selected[0]).description);
+      store.commit('setTaskId', this.selected[0]);
+    },
+    setAnnotationState() {
+      const store = this.$store;
+      store.commit('setAnnotationState', enums.annotationState.NEW);
+      store.commit('setAnnotationId', undefined);
+    },
+    throwError(message) {
+      const store = this.$store;
+      store.commit('setError', message);
+      store.dispatch('resetError');
+    },
   },
   created() {
+    const userId = this.$auth.user.sub;
     taskApi.taskList((result) => {
       this.tasks = result.values;
-    });
+    }, userId);
   },
 
 };

@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import enums from '@/utils/enums';
 
 Vue.use(Vuex);
 
@@ -9,6 +10,8 @@ export default new Vuex.Store({
       id: undefined,
       text: '',
     },
+    annotationId: undefined,
+    annotationState: enums.annotationState.NEW,
     success: undefined,
     error: undefined,
   },
@@ -19,9 +22,19 @@ export default new Vuex.Store({
     setTaskText(state, text) {
       state.currentTask.text = text;
     },
+    setAnnotationState(state, newState) {
+      state.annotationState = newState;
+    },
+    setAnnotationId(state, id) {
+      state.annotationId = id;
+    },
     resetDefaultTask(state) {
       state.currentTask.id = undefined;
       state.currentTask.text = '';
+    },
+    resetDefaultAnnotationState(state) {
+      state.annotationState = enums.annotationState.NEW;
+      state.annotationId = undefined;
     },
     setError(state, message) {
       state.error = message;

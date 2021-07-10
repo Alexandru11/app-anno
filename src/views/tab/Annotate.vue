@@ -4,8 +4,16 @@
 <v-btn
   v-on:click="submitAnnotations"
   :disabled="disabledSubmit"
+  v-if="newState"
 >
-  Submit
+  Submit New
+</v-btn>
+<v-btn
+  v-on:click="submitAnnotations"
+  :disabled="disabledSubmit"
+  v-if="updateState"
+>
+  Submit Update
 </v-btn>
 <v-row>
     <v-col
@@ -256,6 +264,8 @@ import ReactiveText from '@/components/tabs/annotate/reactiveText.vue';
 // import fsManager from '@/utils/FileSystemManager';
 import annotateModel from '@/models/AnnotateModel';
 import taskApi from '@/api/TaskApi';
+import annotateApi from '@/api/AnnotateApi';
+import enums from '@/utils/enums';
 
 export default {
   name: 'AnnotateComponent',
@@ -288,15 +298,55 @@ export default {
       }
     },
     submitAnnotations() {
-      try {
-        // set annotation with service
+      const store = this.$store;
+      const { user } = this.$auth;
 
-        this.$store.commit('setSuccess', 'Annotations submitted successfully!');
-        this.$store.dispatch('resetSuccess');
-        this.retreiveInitialState();
+      const annotations = {
+        userId: user.sub,
+        userName: user.name,
+        userEmail: user.email,
+        taskId: store.state.currentTask.id,
+        taskText: store.state.currentTask.text,
+        annotationProperties: this.annotations.map((a) => ({
+          entity: a.entity,
+          startPosition: a.startPosition,
+          endPosition: a.endPosition,
+          labels: a.annotationProperties.labels,
+        })),
+      };
+
+      try {
+        switch (store.state.annotationState) {
+          case enums.annotationState.NEW:
+            annotateApi.createAnnotation(
+              () => {
+                this.throwSuccess('Annotations submitted successfully!');
+              },
+              annotations,
+              (error) => {
+                this.throwError(`Could not create annotation! Reason: ${error}`);
+              },
+            );
+            break;
+          case enums.annotationState.UPDATE:
+            annotateApi.updateAnnotation(
+              () => {
+                this.throwSuccess('Annotations submitted successfully!');
+              },
+              store.state.annotationId,
+              { annotationProperties: annotations.annotationProperties },
+              (error) => {
+                this.throwError(`Could not create annotation! Reason: ${error}`);
+              },
+            );
+            break;
+          default:
+            break;
+        }
       } catch (e) {
-        this.$store.commit('setError', 'This is us, not you!');
-        this.$store.dispatch('resetError');
+        this.throwError('This is us, not you!');
+      } finally {
+        this.retreiveInitialState();
       }
     },
     addAnnotation(annotationProperties) {
@@ -335,19 +385,37 @@ export default {
       this.resetDocumentOverview();
       this.resetTaskParams();
     },
+    throwError(message) {
+      const store = this.$store;
+      store.commit('setError', message);
+      store.dispatch('resetError');
+    },
+    throwSuccess(message) {
+      const store = this.$store;
+      store.commit('setSuccess', message);
+      store.dispatch('resetSuccess');
+    },
   },
   computed: {
     disabledSubmit() {
       return !(this.$store.state.currentTask.id && this.annotations.length);
     },
+    newState() {
+      return this.$store.state.annotationState === enums.annotationState.NEW;
+    },
+    updateState() {
+      return this.$store.state.annotationState === enums.annotationState.UPDATE;
+    },
   },
   created() {
     const that = this;
-    if (this.$store.state.currentTask.id) {
-      taskApi.taskParams(this.$store.state.currentTask.id, (result) => {
+    const { state } = this.$store;
+
+    if (state.currentTask.id) {
+      taskApi.taskParams(state.currentTask.id, (result) => {
         that.$store.commit('setError', undefined);
-        that.document.text = result.parameter.values.text;
-        that.task.params.labels = result.parameter.values.labels;
+        that.document.text = result.values.parameters.text;
+        that.task.params.labels = result.values.parameters.labels;
         console.log(result);
       });
     } else {

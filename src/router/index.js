@@ -7,7 +7,7 @@ import NoPermission from '@/views/NoPermission.vue';
 import Tasks from '@/views/tab/Tasks.vue';
 import Annotate from '@/views/tab/Annotate.vue';
 import Extractors from '@/views/tab/Extractors.vue';
-import ListDocuments from '@/views/tab/ListDocuments.vue';
+import ListConflicts from '@/views/tab/ListConflicts.vue';
 import Statistics from '@/views/tab/Statistics.vue';
 
 Vue.use(VueRouter);
@@ -47,8 +47,8 @@ const routes = [
       },
       {
         path: 'documents',
-        name: 'List of Documents',
-        component: ListDocuments,
+        name: 'List of Conflicts',
+        component: ListConflicts,
         meta: {
           requiresAuth: true,
         },

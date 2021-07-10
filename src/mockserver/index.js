@@ -20,6 +20,7 @@ export default function createServer() {
     },
     routes() {
       this.passthrough('http://localhost:4003/**');
+      this.passthrough('https://dev-bkz4ssh2.eu.auth0.com/**');
       this.namespace = 'api';
 
       hookTaskRoutes(this);
