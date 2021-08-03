@@ -237,6 +237,7 @@
     >
       <sideAnnotationMenu
         :annotations="annotations"
+        @edit-annotation="onEditAnnotation"
       >
       </sideAnnotationMenu>
     </v-col>
@@ -295,6 +296,19 @@ export default {
         this.annotation.endPosition = endPosition;
         this.menuStatus = true;
         // this.doCreateEntity();
+      }
+    },
+    onEditAnnotation({
+      entity,
+      startPosition,
+      endPosition,
+    }) {
+      this.annotations = this.annotations.filter((annotation) => annotation.entity !== entity);
+      if (entity !== '') {
+        this.annotation.value = entity;
+        this.annotation.startPosition = startPosition;
+        this.annotation.endPosition = endPosition;
+        this.menuStatus = true;
       }
     },
     submitAnnotations() {
@@ -420,6 +434,20 @@ export default {
       });
     } else {
       this.$store.commit('setError', 'Please choose a task first!');
+    }
+
+    switch (state.annotationState) {
+      case enums.annotationState.NEW:
+      // no current annotations
+        break;
+      case enums.annotationState.UPDATE:
+        annotateApi.getAnnotation((result) => {
+          this.annotations = result.annotationProperties;
+        }, state.annotationId);
+        break;
+      default:
+      // no default bihaviour yet
+        break;
     }
   },
 };

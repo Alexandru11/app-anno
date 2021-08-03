@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title class="green white--text text-h5">
+    <v-card-title color="green lighten-4" class="green lighten-3 black--text text-h5">
       Conflict Directory
     </v-card-title>
     <v-row

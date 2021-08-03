@@ -6,7 +6,7 @@ import Register from '@/views/Register.vue';
 import NoPermission from '@/views/NoPermission.vue';
 import Tasks from '@/views/tab/Tasks.vue';
 import Annotate from '@/views/tab/Annotate.vue';
-import Extractors from '@/views/tab/Extractors.vue';
+import Annotations from '@/views/tab/Annotations.vue';
 import ListConflicts from '@/views/tab/ListConflicts.vue';
 import Statistics from '@/views/tab/Statistics.vue';
 
@@ -38,9 +38,9 @@ const routes = [
         },
       },
       {
-        path: 'extractors',
-        name: 'Extractors',
-        component: Extractors,
+        path: 'annotations',
+        name: 'Annotations',
+        component: Annotations,
         meta: {
           requiresAuth: true,
         },

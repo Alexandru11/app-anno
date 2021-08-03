@@ -18,4 +18,9 @@ export default {
       data,
     }).then((req) => req.data);
   },
+  // handled by the browser
+  async executeDownload(resource) {
+    const resourceURL = `${backendUri}${resource}`;
+    window.open(resourceURL);
+  },
 };

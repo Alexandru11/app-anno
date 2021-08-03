@@ -51,10 +51,10 @@
           </v-tab>
 
           <v-tab
-            href="#tab-extractors"
-            to="/extractors"
+            href="#tab-annotations"
+            to="/annotations"
           >
-            Extractors
+            Annotations
           </v-tab>
         </v-tabs>
         </template>

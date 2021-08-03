@@ -18,7 +18,7 @@
   >
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>Tasks available</v-toolbar-title>
+        <v-toolbar-title>Available tasks</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-switch
           v-model="singleExpand"
@@ -29,7 +29,7 @@
     </template>
     <template v-slot:expanded-item="{ headers, item }">
       <td :colspan="headers.length">
-        More info about {{ item.description }}
+        {{ item.description }}
       </td>
     </template>
   </v-data-table>
@@ -59,8 +59,8 @@ export default {
       if (!this.selected.length) {
         this.throwError('Please choose a task first!');
       } else {
-        // eslint-disable-next-line no-underscore-dangle
         this.setNewTask();
+        this.setAnnotationState();
         this.$router.push('/annotate');
       }
       // go-to Annotation tab

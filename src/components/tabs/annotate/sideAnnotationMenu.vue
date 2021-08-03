@@ -15,25 +15,20 @@
             :value="item.entity"
             active-class="deep-purple--text text--accent-4"
           >
-            <template v-slot:default="{ active }">
+            <template >
               <v-list-item-content>
                 <v-list-item-title v-text="item.entity"></v-list-item-title>
               </v-list-item-content>
 
               <v-list-item-action>
                 <v-row>
-                  <v-icon                  small
-                  left
-                  text
-                  depressed
-                    color="orange darken-4"
-                  >
+                  <v-icon small
+                          right
+                          text
+                          color="orange darken-4"
+                          @click="edit(item)">
                     mdi-pencil
                   </v-icon>
-                <v-checkbox
-                  :input-value="active"
-                  color="deep-purple accent-4"
-                ></v-checkbox>
                 </v-row>
               </v-list-item-action>
             </template>
@@ -50,6 +45,12 @@ export default {
   data: () => ({
   }),
   methods: {
+    edit(item) {
+      this.emitEditToParent(item);
+    },
+    emitEditToParent(item) {
+      this.$emit('edit-annotation', item);
+    },
   },
   watch: {
   },
