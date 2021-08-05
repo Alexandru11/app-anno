@@ -90,7 +90,7 @@ export default {
     logout() {
       localStorage.removeItem('jwt');
       this.$auth.logout();
-      this.$router.push('/login');
+      // this.$router.push('/login');
     },
   },
   created() {

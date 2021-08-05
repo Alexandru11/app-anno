@@ -325,7 +325,7 @@ export default {
           entity: a.entity,
           startPosition: a.startPosition,
           endPosition: a.endPosition,
-          labels: a.annotationProperties.labels,
+          labels: a.labels,
         })),
       };
 
@@ -368,7 +368,7 @@ export default {
         entity: this.annotation.value,
         startPosition: this.annotation.startPosition,
         endPosition: this.annotation.endPosition,
-        annotationProperties,
+        labels: annotationProperties.labels,
       });
 
       // persist annotations somehow

@@ -67,6 +67,7 @@ export const useAuth0 = ({
       },
 
       async logout(params = {}) {
+        params.returnTo = `${window.location.origin}`;
         params.client_id = this.options.clientId;
         await this.auth0Client.logout(params);
         this.user = {};
