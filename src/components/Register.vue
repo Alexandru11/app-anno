@@ -19,7 +19,7 @@
                 flat
               >
                 <v-spacer></v-spacer>
-                <v-toolbar-title>Log in to App-anno</v-toolbar-title>
+                <v-toolbar-title>Sign up for App-anno</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-tooltip bottom>
                   <span>Source</span>
@@ -28,12 +28,36 @@
               <v-card-text>
                 <v-form
                   v-model="valid"
-                  lazy-validation
                   ref="form"
+                  lazy-validation
                 >
+                  <v-text-field
+                    v-model="firstname"
+                    :rules="nameRules"
+                    :counter="20"
+                    label="First name"
+                    required
+                  ></v-text-field>
+
+                  <v-text-field
+                    v-model="lastname"
+                    :rules="nameRules"
+                    :counter="20"
+                    label="Last name"
+                    required
+                  ></v-text-field>
+
+                  <v-text-field
+                    v-model="email"
+                    :rules="emailRules"
+                    label="E-mail"
+                    required
+                  ></v-text-field>
+
                   <v-text-field
                     v-model="username"
                     :rules="usernameRules"
+                    :counter="20"
                     label="Username"
                     required
                   ></v-text-field>
@@ -47,8 +71,12 @@
                     label="Password"
                     required
                   ></v-text-field>
+
                 </v-form>
               </v-card-text>
+              <v-alert v-if="success" type="success">
+                {{success}}
+              </v-alert>
               <div v-if="errors.length">
                 <v-alert v-for="(error, index) in errors" :key="index" type="error">
                   {{error}}
@@ -56,21 +84,10 @@
               </div>
               <v-card-actions class="d-flex justify-center">
                 <div class="d-flex flex-column">
-                    <v-btn :disabled="!valid" @click="login" text color="green" >
-                      Login
+                    <v-btn :disabled="!valid" @click="register" text color="primary">
+                      Register
                     </v-btn>
-                    <v-btn @click="loginFB" text color="blue">
-                      Login with Facebook
-                    </v-btn>
-                    <v-btn @click="loginG" text color="red">
-                      Login with Google
-                    </v-btn>
-                    <div class="text-center">
-                      <v-chip :to="{ path: '/register' }" color="white"
-                              text-color="blue" >
-                        Sign up for app-anno
-                      </v-chip>
-                    </div>
+                    <v-btn @click="$router.go(-1)" text color="error">Cancel</v-btn>
                 </div>
               </v-card-actions>
             </v-card>
@@ -82,15 +99,28 @@
 <script>
 
 export default {
-  name: 'LoginComponent',
+  name: 'RegisterComponent',
 
   data: () => ({
-    valid: false,
+    valid: true,
     errors: [],
+    success: '',
     showPassword: false,
+    firstname: '',
+    lastname: '',
+    nameRules: [
+      (v) => !!v || 'Name is required',
+      (v) => v.length <= 20 || 'Name must be less than 20 characters',
+    ],
+    email: '',
+    emailRules: [
+      (v) => !!v || 'E-mail is required',
+      (v) => /.+@.+/.test(v) || 'E-mail must be valid',
+    ],
     username: '',
     usernameRules: [
-      (v) => !!v || 'Username or Email is required',
+      (v) => !!v || 'Username is required',
+      (v) => v.length <= 20 || 'Username must be less than 20 characters',
     ],
     password: '',
     passwordRules: [
@@ -107,40 +137,33 @@ export default {
     resetValidation() {
       this.$refs.form.resetValidation();
     },
-    login() {
-      const router = this.$router;
+    async register() {
+      const that = this;
       this.errors = [];
+      this.success = '';
+
       if (!this.$refs.form.validate()) {
         console.log('Not all fields validated!');
         return;
       }
-      this.$auth.login({
-        username: this.username,
+      this.$auth.signUpWithCredentials({
+        email: this.email,
         password: this.password,
-        responseType: 'token',
-      }, (err, authResult) => {
+        username: this.username,
+        given_name: this.firstname,
+        family_name: this.lastname,
+        name: `${this.firstname} ${this.lastname}`,
+      }, (err) => {
         if (err) {
-          this.errors.push(err.description);
-          console.log(`Error message when logging in ${err}`);
+          const message = err.policy ? err.policy : `Error with code ${err.code}`;
+          that.errors.push(message);
           return;
         }
-        if (authResult) localStorage.setItem('jwt', authResult.accessToken);
-        // TOFIX Throws a redirect error because of this
-        router.push('/annotate');
+        this.$router.push('/login');
       });
     },
-    loginFB() {
-      // console.log('been there done that');
-      this.$auth.loginSocial({
-        connection: 'facebook',
-      });
-    },
-    loginG() {
-      // console.log('been there done that');
-      this.$auth.loginSocial({
-        connection: 'google-oauth2',
-      });
-    },
+  },
+  computed: {
   },
 };
 </script>
