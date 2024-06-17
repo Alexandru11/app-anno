@@ -8,6 +8,10 @@ Inbound annotation tasks are received through messaging queue consumer micro-ser
 
 Authentication is done via redirection to Auth0 and using auth0 library.
 
+Check out the other repositories for the micro-services involved in the backend.
+
+TODO: Readme to be updated with the actual architecture diagram.
+
 ## Project setup
 ```
 npm install
