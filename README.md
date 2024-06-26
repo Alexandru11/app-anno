@@ -53,8 +53,6 @@ Clicking on Solve under the conflicted user redirects the current user to the ac
 
 ![image](https://github.com/alxdru/app-anno/assets/18479060/e0b3efbf-ecbc-49d4-8044-f61dfb2d878a)
 
-![image](https://github.com/alxdru/app-anno/assets/18479060/7783f165-a80c-4228-9b8b-cd0848c0da15)
-
 ## Managing annotations
 
 Below I am associating the JSON objects from REST calls with the actual features of the application.
@@ -63,6 +61,7 @@ Below I am associating the JSON objects from REST calls with the actual features
 
 These are the types of labels that can be assigned to annotated portions of text. Of course this can be extended with other specific labels.
 
+```json
 "parameters": {
 "labels": [{
 "_id": {
@@ -83,11 +82,13 @@ These are the types of labels that can be assigned to annotated portions of text
 "name": "T_PERS",
 "display_name": "Person"
 }],}
+```
 
 ### Annotation Structure
 
 At the end of the annotating process the following JSON structure will be saved:
 
+```json
 {
 "_id": {
 "$oid": "60e76cd5df510e81a0c56f27"
@@ -118,6 +119,7 @@ At the end of the annotating process the following JSON structure will be saved:
 "taskText": "This is an annotation task",
 "__v": 0
 }
+```
 
 ### Managing Conflicts
 
@@ -126,6 +128,7 @@ These conflicts should be resolved before annotations can be used by an NLP syst
 
 The application can query these kind of conflicts. The JSON objects of these queries rendered by the app look as following:
 
+```json
 {
 "values": [
 {
@@ -149,9 +152,11 @@ The application can query these kind of conflicts. The JSON objects of these que
 }
 ]
 }
+```
 
 ### Annotation Task
 
+```json
 {
 "_id": {
 "$oid": "60bfa444b3dce54f1055b491"
@@ -174,7 +179,22 @@ The application can query these kind of conflicts. The JSON objects of these que
 "text": "This is task where you need to label text that is Organization, Location, Person..."
 }
 }
+```
 
+## High-level architecture
+
+Deployment was done using SAP BTP, but any other Cloud Provider would do with some minor changes to the actual messaging applications.
+The platform components are:
+
+- Microservices for communication with external platforms (Node.js + Event Mesh) // Annotation tasks ingestion
+- Microservices for internal communication (Node.js + Event Mesh) // Consumers that read task messages and bring them into the app's storage for consumption
+- RESTful APIs for application's tabs (Node.js) // 
+- Application that serves as the main GUI (Vue.js)
+- Authentication system was done through Auth0
+- SAP Event Mesh as messaging service
+- Storage with NoSQL MongoDB instance
+
+![image](https://github.com/alxdru/app-anno/assets/18479060/22aae4f9-5143-4a6c-97ee-15a9fa05a529)
 
 ## Project setup
 ```
@@ -195,11 +215,6 @@ npm run build
 ```
 npm run lint
 ```
-
-
-## High-level architecture
-
-![image](https://github.com/alxdru/app-anno/assets/18479060/22aae4f9-5143-4a6c-97ee-15a9fa05a529)
 
 
 ### Customize configuration
